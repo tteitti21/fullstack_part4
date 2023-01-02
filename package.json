@@ -1,7 +1,7 @@
 {
   "name": "backend",
   "version": "0.0.1",
-  "description": "part 3 exercises",
+  "description": "part 4 exercises",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
