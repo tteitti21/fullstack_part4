@@ -92,6 +92,32 @@ describe('Posted blogs must have all attributes and length of array increased', 
     )
   })
 })
+
+describe('Likes property should default to 0 if its missing', () => {
+  test('empty likes defaults to 0', async () => {
+    const newBlog = {
+      title: 'New blog',
+      author: 'Tino Teittinen',
+      url: 'http://howToWriteaBlog.com//firstBlog.html',
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+
+    const newNumberOfBlogs = await api.get('/api/blogs')
+
+    if (Object.hasOwn(newBlog, 'likes')) {
+      expect(true)
+    } else {
+      const testBlog = newNumberOfBlogs.body.filter(blog => blog.title === 'New blog')
+      console.log(testBlog)
+      expect(testBlog[0].likes).toBe(0)
+    }
+  })
+})
+
+
 afterAll(() => {
   mongoose.connection.close()
 })

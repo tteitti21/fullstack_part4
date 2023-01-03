@@ -8,10 +8,17 @@ blogRouter.get('/', async (request, response) => {
 })
 
 blogRouter.post('/', async (request, response) => {
+
   const blog = new Blog(request.body)
 
-  const savedBlog = await blog.save()
-  response.status(201).json(savedBlog)
+  if (Object.hasOwn(blog, 'likes')) {
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
+  } else {
+    blog['likes'] = 0
+    const savedBlog = await blog.save()
+    response.status(201).json(savedBlog)
+  }
 })
 
 module.exports = blogRouter
