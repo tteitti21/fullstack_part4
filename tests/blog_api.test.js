@@ -62,11 +62,11 @@ describe('Tests that content-type is JSON and all the blogs are included', () =>
   })
 })
 
-describe('Tests every block entry for correct attribute name', () => {
+describe('Tests that id is not named _id for every blog', () => {
   test('tests that id is not named _id', async () => {
 
     const response = await api.get('/api/blogs')
-    response.body.forEach( (b) => expect(b.id, b.title, b.author, b.url, b.likes).toBeDefined())
+    response.body.forEach( (b) => expect(b.id).toBeDefined())
   })
 })
 
@@ -175,6 +175,31 @@ describe('deleting a specific blog', () => {
 
     const titles = refreshedBlogs.body.map(blog => blog.title)
     expect(titles).not.toContain(blogs.title)
+  })
+})
+
+describe('updating a specific blog', () => {
+  test('updating a valid blog based on id', async () => {
+
+    const blogs = await api.get('/api/blogs')
+    const blogToUpdate = blogs.body[0]
+    const updatedBlog = {
+      'likes': 1000
+    }
+    const response = await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(updatedBlog)
+    expect(response.body.likes).toBe(1000)
+
+    const refreshedBlogs = await api.get('/api/blogs')
+    const inspectableBlog = refreshedBlogs.body[0]
+    expect(inspectableBlog).toEqual({
+      id: blogToUpdate.id,
+      title: 'React patterns',
+      author: 'Michael Chan',
+      url: 'https://reactpatterns.com/',
+      likes: 1000,
+    })
   })
 })
 
