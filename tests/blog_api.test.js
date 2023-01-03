@@ -111,8 +111,51 @@ describe('Likes property should default to 0 if its missing', () => {
       expect(true)
     } else {
       const testBlog = newNumberOfBlogs.body.filter(blog => blog.title === 'New blog')
-      console.log(testBlog)
       expect(testBlog[0].likes).toBe(0)
+    }
+  })
+})
+
+describe('Title or url missing => 400 Bad Request', () => {
+
+  test('title missing', async () => {
+    const newBlog = {
+      author: 'Tino Teittinen',
+      url: 'http://howToWriteaBlog.com//firstBlog.html',
+    }
+
+    if (!Object.hasOwn(newBlog, 'title') || !Object.hasOwn(newBlog, 'url')) {
+      await api.
+        post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+    }
+  })
+
+  test('url missing', async () => {
+    const newBlog = {
+      title: 'New blog',
+      author: 'Tino Teittinen',
+    }
+
+    if (!Object.hasOwn(newBlog, 'title') || !Object.hasOwn(newBlog, 'url')) {
+      await api.
+        post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+    }
+  })
+
+  test('title and url missing', async () => {
+    const newBlog = {
+      author: 'Tino Teittinen',
+    }
+
+    if (!Object.hasOwn(newBlog, 'title') || !Object.hasOwn(newBlog, 'url')) {
+      await api.
+        post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
     }
   })
 })
