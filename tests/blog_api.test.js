@@ -160,6 +160,23 @@ describe('Title or url missing => 400 Bad Request', () => {
   })
 })
 
+describe('deleting a specific blog', () => {
+  test('deleting a valid blog based on id', async () => {
+
+    const blogs = await api.get('/api/blogs')
+    const blogToDelete = blogs.body[0]
+    console.log(blogToDelete)
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const refreshedBlogs = await api.get('/api/blogs')
+    expect(refreshedBlogs.body).toHaveLength(initialBlogs.length -1)
+
+    const titles = refreshedBlogs.body.map(blog => blog.title)
+    expect(titles).not.toContain(blogs.title)
+  })
+})
 
 afterAll(() => {
   mongoose.connection.close()
