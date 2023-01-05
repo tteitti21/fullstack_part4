@@ -5,18 +5,31 @@ GET http://localhost:3001/api/blogs
 ###
 GET http://localhost:3001
 
+###
+GET http://localhost:3001/api/users/
+
 
 ###
 POST http://localhost:3001/api/blogs/ HTTP/1.1
 content-type: application/json
 
 {
-    "title": "How to become sandman",
-    "author": "Sandman Man",
-    "url": "https://www.sandmansite.com/blogs",
-    "likes": 100
+    "title": "New blog with ID",
+    "author": "Tino T",
+    "url": "https://www.siteOfSites.com/blogs",
+    "likes": 200,
+    "user": "63b6bd975b7dba1535ba75c7"
 }
 
+###
+POST http://localhost:3001/api/users/ HTTP/1.1
+content-type: application/json
+
+{
+    "username": "TM",
+    "name": "Mikael",
+    "password": "salainensana"
+}
 
 ###
 DELETE http://localhost:3001/api/blogs/497
