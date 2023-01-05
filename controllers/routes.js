@@ -1,3 +1,4 @@
+const jwt = require('jsonwebtoken')
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/users')
@@ -8,12 +9,27 @@ blogRouter.get('/', async (request, response) => {
   response.json(blogs)
 })
 
+/** Gets authorization header from the request and checks whether
+ * it starts with Bearer or not.
+ */
+const getTokenFrom = request => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    return authorization.substring(7)
+  }
+  return null
+}
+
 blogRouter.post('/', async (request, response) => {
   const blog = request.body
+  const token = getTokenFrom(request)
+  const decodedToken = jwt.verify(token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token missing or invalid' })
+  }
+  const user = await User.findById(decodedToken.id)
 
-  const user = await User.findById(blog.user)
-  console.log('hui2')
-  console.log(user)
+  //const user = await User.findById(blog.user)
   const preparedBlog = new Blog({
     title: blog.title,
     author: blog.author,
@@ -23,11 +39,8 @@ blogRouter.post('/', async (request, response) => {
   })
 
   if (Object.hasOwn(request.body, 'likes')) {
-    console.log('hui')
     const savedBlog = await preparedBlog.save()
-    console.log(savedBlog)
     user.blogs = user.blogs.concat(savedBlog._id)
-    console.log(savedBlog._id)
     await user.save()
     response.status(201).json(savedBlog)
   }

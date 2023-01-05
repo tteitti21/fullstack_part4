@@ -42,3 +42,16 @@ content-type: application/json
 
 ###
 DELETE http://localhost:3001/api/blogs/497
+
+###
+POST http://localhost:3001/api/blogs/ HTTP/1.1
+content-type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRNIiwiaWQiOiI2M2I2ZGIxOWU3NzM1YWI2NTQ3ZDRmYjYiLCJpYXQiOjE2NzI5NDA2OTZ9.wpTG-s5ERMzdZqoM4PWZ0fQJa5SUHeyVRmu1NnYqHJs
+
+{
+    "title": "New blog with ID",
+    "author": "Tino T",
+    "url": "https://www.siteOfSites.com/blogs",
+    "likes": 200,
+    "user": "63b6bd975b7dba1535ba75c7"
+}
