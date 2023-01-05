@@ -5,10 +5,24 @@ const User = require('../models/users')
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body
 
-  const existingUser = await User.findOne({ username })
-  if (existingUser) {
+  if (username) {
+    const existingUser = await User.findOne({ username })
+    if (existingUser) {
+      return response.status(400).json({
+        error: 'Username must be unique'
+      })
+    }
+  }
+
+  if (password === undefined || password.length < 3 ) {
     return response.status(400).json({
-      error: 'username must be unique'
+      error: 'Invalid password. Input at least 3 characters'
+    })
+  }
+
+  if (username === undefined || username.length < 3) {
+    return response.status(400).json({
+      error: 'Invalid username. Input at least 3 characters'
     })
   }
 
