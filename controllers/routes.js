@@ -3,12 +3,14 @@ const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 const User = require('../models/users')
 
+// GET
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({})
     .populate('user', { username: 1, name: 1 })
   response.json(blogs)
 })
 
+// POST
 blogRouter.post('/', async (request, response) => {
   const blog = request.body
   const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -45,11 +47,21 @@ blogRouter.post('/', async (request, response) => {
   }
 })
 
+// DELETE
 blogRouter.delete('/:id', async (request, response) => {
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  const user = await User.findById(decodedToken.id)
+  const blog = await Blog.findById(request.params.id)
+
+  if ( blog.user.toString() !== user.id.toString() ) {
+    return response.status(403).json({ error: 'You dont have rights to delete this blog' })
+  }
+
   await Blog.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 
+// PUT
 blogRouter.put('/:id', async (request, response) => {
   const body = request.body
   const blog = {
