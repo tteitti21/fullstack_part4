@@ -4,6 +4,7 @@ const requestLogger = (request, response, next) => {
   cmd('Method:', request.method)
   cmd('Path:  ', request.path)
   cmd('Body:  ', request.body)
+  cmd('Token: ', request.token)
   cmd('---')
   next()
 }
@@ -28,8 +29,20 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
+/** Gets authorization header from the request and checks whether
+ * it starts with Bearer or not.*/
+const tokenExtractor = (request, response, next) => {
+
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.substring(7)
+  }
+  next()
+}
+
 module.exports = {
   requestLogger,
   unknownEndpoint,
-  errorHandler
+  errorHandler,
+  tokenExtractor
 }
